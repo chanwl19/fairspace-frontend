@@ -1,9 +1,14 @@
-import React from "react";
 import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
-import dataJSON from '../../public/data.json';
+//import dataJSON from '../../public/data.json';
 
-export const Table = ({ rows, deleteRow, editRow }) => {
-  const fields=Object.keys(Object.values(dataJSON)[0]).filter((item:any)=>!(item.startsWith("delta_")));
+type TableProps = {
+  rows :any;
+  deleteRow :any;
+  editRow :any;
+};
+
+export const Table = ({ rows, deleteRow, editRow } : TableProps) => {
+  //const fields=Object.keys(Object.values(dataJSON)[0]).filter((item:any)=>!(item.startsWith("delta_")));
   
   return (
    

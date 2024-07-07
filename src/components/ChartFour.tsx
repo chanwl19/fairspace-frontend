@@ -7,7 +7,7 @@ interface ChartFourState {
 }
 
 const ChartFour: React.FC = () => {
-  const [state, setState] = useState<ChartFourState>({
+  const [state] = useState<ChartFourState>({
     series: [
       {
         data: [

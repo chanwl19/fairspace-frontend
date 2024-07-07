@@ -123,7 +123,7 @@ interface ChartOneState {
 }
 
 const ChartOne: React.FC = () => {
-  const [state, setState] = useState<ChartOneState>({
+  const [state] = useState<ChartOneState>({
     series: [
       {
         name: 'Product One',

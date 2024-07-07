@@ -70,7 +70,7 @@ interface ChartTwoState {
 }
 
 const ChartTwo: React.FC = () => {
-  const [state, setState] = useState<ChartTwoState>({
+  const [state] = useState<ChartTwoState>({
     series: [
       {
         name: 'Sales',

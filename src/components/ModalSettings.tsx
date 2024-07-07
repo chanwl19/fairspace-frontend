@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import dataJSON from '../../public/data.json';
 
+type ModalProps = {
+  closeModal : () => void;
+  onSubmit : (data: any) => void;
+  defaultValue: any;
+};
 
+// const data = {
+// }
 
-export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
+export const Modal = ({ closeModal, onSubmit, defaultValue } : ModalProps) => {
   const fields=Object.keys(Object.values(dataJSON)[0]).filter((item:any)=>!(item.startsWith("delta_")));
   
   const [formState, setFormState] = useState(
@@ -32,7 +39,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
         }
         else{
         if (key=='id'){
-          if (!(Object.keys(dataJSON).includes(value)||value=="ALL")){
+          if (!(Object.keys(dataJSON).includes(value.toString())||value=="ALL")){
             errorFields.push("INVALID_ID_"+value)
           }
         }
@@ -44,7 +51,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     console.log(formState.criterion);
     console.log(e.target.name);
     console.log(e.target.name=="para"&&e.target.value=='rating');
@@ -57,7 +64,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -70,8 +77,9 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
   return (
     <div
       className="modal-container fixed z-50 flex top-25 bottom-5 "
-      onClick={(e) => {
-        if (e.target.className === "modal-container") closeModal();
+      onClick={(e: React.MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (target.className === "modal-container") closeModal();
       }}
     >
     
