@@ -1,10 +1,11 @@
 import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy, useContext } from 'react';
+import { Suspense, lazy, useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
 import Login from './pages/Authentication/Login';
 import ECommerce from './pages/Dashboard/ECommerce';
+import useRefreshToken from './hooks/useRefreshToken';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -12,6 +13,19 @@ function App() {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
   const routes = authCtx.routes;
+  const refresh = useRefreshToken();
+  const refreshFunc = async () => {
+    const accessToken = await refresh();
+    console.log(accessToken);
+  }
+
+  useEffect(() => {
+    console.log("User effect here");
+    if (!user) {
+      refreshFunc();
+    }
+  }, []);
+
   return (
     (!user?.roles || user?.roles?.length === 0) ? (
       <Login />
