@@ -65,8 +65,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   async function logoutUser(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
     try {
-      const _id = user?._id.toString();
-      const response = await axios.post('auth/logout', JSON.stringify({ _id }));
+      const response = await axios.post('auth/logout');
       console.log(response);
     } catch (err) {
       const error = err as AxiosError;
