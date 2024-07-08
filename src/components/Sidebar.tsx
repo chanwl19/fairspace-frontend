@@ -60,7 +60,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
   const authCtx = useContext(AuthContext);
   const routes = authCtx.routes;
-  const user = authCtx.user;
 
   async function logoutUser(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
