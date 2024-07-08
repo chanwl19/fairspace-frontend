@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import MenuItem from './MenuItem';
-import axios from '../../http/axios';
+import axios from '../http/axios';
 import { AxiosError } from 'axios';
 
 interface SidebarProps {
