@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy, useContext, useEffect } from 'react';
+import { Suspense, lazy, useContext, useEffect, useState } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
@@ -14,14 +14,13 @@ function App() {
   const user = authCtx.user;
   const routes = authCtx.routes;
   const refresh = useRefreshToken();
-  const refreshFunc = async () => {
-    const accessToken = await refresh();
-    console.log(accessToken);
-  }
 
   useEffect(() => {
     console.log("User effect here");
     if (!user) {
+      async function refreshFunc() {
+        await refresh();
+      }
       refreshFunc();
     }
   }, []);

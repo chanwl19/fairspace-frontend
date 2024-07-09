@@ -43,7 +43,7 @@ const defaultRoutes = [
     },
     {
         path: '/profile',
-        title: 'Profile',
+        title: 'My Profile',
         component: Profile,
     }
 ]

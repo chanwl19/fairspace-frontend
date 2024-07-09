@@ -22,7 +22,6 @@ export default function Login() {
       const userId = userIdInput.current!.value;
       const password = passwordInput.current!.value;
       const response = await axios.post('auth/login', JSON.stringify({ userId, password }));
-      console.log(JSON.stringify(response.data));
       const user = response.data.user as User;
       authCtx.loginUser(user);
     } catch (err) {
@@ -31,7 +30,6 @@ export default function Login() {
       const { message } = error.response?.data as { message: string };
       setErrorMsg(message);
     }
-
     setLoading(false);
   }
 
