@@ -16,7 +16,6 @@ function App() {
   const refresh = useRefreshToken();
 
   useEffect(() => {
-    console.log("User effect here");
     if (!user) {
       async function refreshFunc() {
         await refresh();
