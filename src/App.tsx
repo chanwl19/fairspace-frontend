@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy, useContext, useEffect, useState } from 'react';
+import { Suspense, lazy, useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
