@@ -6,7 +6,7 @@ function useRefreshToken(){
 
     const { storeAccessToken, loginUser } = useContext(AuthContext);
 
-    const refresh = async () => {
+    const refreshToken = async () => {
         const response = await axios.get('/refresh', {
             withCredentials: true
         });
@@ -14,7 +14,7 @@ function useRefreshToken(){
         loginUser(response.data.user);
         return response.data.accessToken;
     }
-    return refresh;
+    return refreshToken;
 };
 
 export default useRefreshToken;

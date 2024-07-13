@@ -13,12 +13,14 @@ function App() {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
   const routes = authCtx.routes;
-  const refresh = useRefreshToken();
+  const refreshToken = useRefreshToken();
 
   useEffect(() => {
+    console.log("In use effect")
     if (!user) {
+      console.log("NO user")
       async function refreshFunc() {
-        await refresh();
+        await refreshToken();
       }
       refreshFunc();
     }

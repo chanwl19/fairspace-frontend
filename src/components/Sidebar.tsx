@@ -60,11 +60,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
   const authCtx = useContext(AuthContext);
   const routes = authCtx.routes;
+  const user = authCtx.user;
 
   async function logoutUser(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
     try {
-      const response = await axios.post('auth/logout');
+      console.log("user ", user)
+      const response = await axios.post('auth/logout', JSON.stringify({user}));
       console.log(response);
     } catch (err) {
       const error = err as AxiosError;
