@@ -76,7 +76,6 @@ export function AuthContextProvider(props: BasicProps) {
         const pages = user.roles?.map(role => role.pages).flat();
         console.log('pages ', pages)
         const filterRoutes = defaultRoutes.filter(route => pages!.some(page => route.path === page.path));
-        console.log('filterRoutes ', filterRoutes)
         setRoutes(filterRoutes);
     };
     
