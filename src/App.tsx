@@ -1,46 +1,25 @@
 import { Toaster } from 'react-hot-toast';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
-//import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
-//import Login from './pages/Authentication/Login';
-//import ECommerce from './pages/Dashboard/ECommerce';
 import useRefreshToken from './hooks/useRefreshToken';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-//import { BrowserRouter as Router } from 'react-router-dom';
-import ResetPassword from './pages/UserPage/ResetPassword';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-//const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
-//const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
-//const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
-//const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
+const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
+const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
+const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
+const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
 const Login = lazy(() => import('./pages/Authentication/Login'));
-//const FacilityManitenance = lazy(() => import('./pages/UserPage/FacilityMaintenance'));
-//const Reports = lazy(() => import('./pages/UserPage/Reports'));
-//const UserMaintenance = lazy(() => import('./pages/UserPage/UserMaintenance'));
-//const Reservation = lazy(() => import('./pages/UserPage/Reservation'));
-//const Support = lazy(() => import('./pages/UserPage/Support'));
-// Profile = lazy(() => import('./pages/UserPage/Profile'));
+const ECommerce = lazy(() => import('./pages/Dashboard/ECommerce'));
 
 function App() {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
-  //const routes = authCtx.routes;
+  const routes = authCtx.routes;
   const refreshToken = useRefreshToken();
-  //const editUserPath = user?.roles?.filter(role => role?.pages?.some(page => '/editUser' === page.path));
-  //const editReservationPath = [1];
+  const editUserPath = user?.roles?.filter(role => role?.pages?.some(page => '/editUser' === page.path));
+  const editReservationPath = [1];
 
-  let router;
-  router = createBrowserRouter([
-    {
-      path: '',
-      element: <Login />
-    },
-    {
-      path: '/resetPassword',
-      element: <ResetPassword />
-    }
-  ])
   // if (!user?.roles || user?.roles?.length === 0) {
   //   router = createBrowserRouter([
   //     {
@@ -91,8 +70,7 @@ function App() {
         />
       }
       <Suspense fallback={<Loader />}>
-        <RouterProvider router={router}></RouterProvider>
-        {/* <Router>
+        <Router>
           <Routes>
             {(!user?.roles || user?.roles?.length === 0) && <Route index element={<Login />} />}
             <Route path='/resetPassword' element={<ResetPassword />} />
@@ -120,7 +98,7 @@ function App() {
               </Route>)
             }
           </Routes>
-        </Router> */}
+        </Router> 
       </Suspense>
       {/* (!user?.roles || user?.roles?.length === 0) ? (
       <Suspense fallback={<Loader />}>
