@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from '../../http/axios';
 import { User } from '../../models/User';
 import Loader from '../../common/loader';
@@ -9,6 +9,7 @@ import { AxiosError } from 'axios';
 export default function EditUser() {
 
     const location = useLocation();
+    const navigate = useNavigate();
     const state = location.state;
     const user: User = state.user;
     const isAddUser: boolean = state.isAddUser;
@@ -98,13 +99,15 @@ export default function EditUser() {
                     }));
                 }
                 console.log(response);
+                setIsLoading(false);
+                navigate("/user");
             } catch (err) {
                 setIsLoading(false);
                 const error = err as AxiosError;
                 const { message } = error.response?.data as { message: string };
                 console.log('error ' , message)
             }
-            setIsLoading(false)
+
         }
     }
 

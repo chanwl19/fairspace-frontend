@@ -1,11 +1,13 @@
 import { Toaster } from 'react-hot-toast';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
-import { Routes, Route, useParams } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
 import Login from './pages/Authentication/Login';
 import ECommerce from './pages/Dashboard/ECommerce';
 import useRefreshToken from './hooks/useRefreshToken';
+//import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
@@ -17,10 +19,16 @@ function App() {
   const user = authCtx.user;
   const routes = authCtx.routes;
   const refreshToken = useRefreshToken();
-  const { token } = useParams();
 
-
-  console.log("token ", token);
+  // const router = createBrowserRouter([
+  //   {
+  //     path: '',
+  //     element: <Login />,
+  //     children: [
+  //       { path: 'resetPassword', element: <ResetPassword /> }
+  //     ]
+  //   },
+  // ])
 
   useEffect(() => {
     if (!user) {
@@ -33,14 +41,16 @@ function App() {
 
   const editUserPath = user?.roles?.filter(role => role?.pages?.some(page => '/editUser' === page.path));
   const editReservationPath = [1];
-  console.log('editUserPath ', editUserPath)
   return (
     (!user?.roles || user?.roles?.length === 0) ? (
       <Suspense fallback={<Loader />}>
-        <Routes>
-          <Route index element={<Login />} />
-          <Route path='/resetPassword' element={<ResetPassword />} />
-        </Routes>
+        <Router>
+          {/* <RouterProvider router={router}></RouterProvider> */}
+          <Routes>
+            <Route index element={<Login />} />
+            <Route path='/resetPassword' element={<ResetPassword />} />
+          </Routes>
+        </Router>
       </Suspense>
     ) : (
       <>
@@ -50,29 +60,31 @@ function App() {
           containerClassName="overflow-auto"
         />
         <Suspense fallback={<Loader />}>
-          <Routes>
-            <Route element={<DefaultLayout />}>
-              {(editUserPath && editUserPath.length > 0) &&
-                 <Route path='/editUser' element={<EditUser />} />
-              }
-              {(editReservationPath && editReservationPath.length > 0) &&
-                <Route path='/editReservation' element={<EditReservation />} />
-              }
-              <Route index element={<ECommerce />} />
-              {routes.map((routes, index) => {
-                const { path, component: Component } = routes;
-                return (
-                  <Route
-                    key={index}
-                    path={path}
-                    element={
-                      <Component />
-                    }
-                  />
-                );
-              })}
-            </Route>
-          </Routes>
+          <Router>
+            <Routes>
+              <Route element={<DefaultLayout />}>
+                {(editUserPath && editUserPath.length > 0) &&
+                  <Route path='/editUser' element={<EditUser />} />
+                }
+                {(editReservationPath && editReservationPath.length > 0) &&
+                  <Route path='/editReservation' element={<EditReservation />} />
+                }
+                <Route index element={<ECommerce />} />
+                {routes.map((routes, index) => {
+                  const { path, component: Component } = routes;
+                  return (
+                    <Route
+                      key={index}
+                      path={path}
+                      element={
+                        <Component />
+                      }
+                    />
+                  );
+                })}
+              </Route>
+            </Routes>
+          </Router>
         </Suspense>
       </>
     )
