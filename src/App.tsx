@@ -29,37 +29,46 @@ function App() {
   //const editReservationPath = [1];
 
   let router;
-
-  if (!user?.roles || user?.roles?.length === 0) {
-    router = createBrowserRouter([
-      {
-        path: '',
-        element: <Login />
-      },
-      {
-        path: '/resetPassword',
-        element: <ResetPassword />
-      }
-    ])
-  } else {
-    router = createBrowserRouter([
-      {
-        path: '',
-        element: <DefaultLayout />,
-        children: [
-          { index: true, element: <ECommerce /> },
-          { path: '/editUser', element: <EditUser /> },
-          { path: '/editReservation', element: <EditReservation /> },
-          { path: '/facility', element: <FacilityManitenance /> },
-          { path: '/reports', element: <Reports /> },
-          { path: '/user', element: <UserMaintenance /> },
-          { path: '/reservation', element: <Reservation /> },
-          { path: '/support', element: <Support /> },
-          { path: '/profile', element: <Profile /> }
-        ]
-      },
-    ])
-  };
+  router = createBrowserRouter([
+    {
+      path: '',
+      element: <Login />
+    },
+    {
+      path: '/resetPassword',
+      element: <ResetPassword />
+    }
+  ])
+  // if (!user?.roles || user?.roles?.length === 0) {
+  //   router = createBrowserRouter([
+  //     {
+  //       path: '',
+  //       element: <Login />
+  //     },
+  //     {
+  //       path: '/resetPassword',
+  //       element: <ResetPassword />
+  //     }
+  //   ])
+  // } else {
+  //   router = createBrowserRouter([
+  //     {
+  //       path: '',
+  //       element: <DefaultLayout />,
+  //       children: [
+  //         { index: true, element: <ECommerce /> },
+  //         { path: '/editUser', element: <EditUser /> },
+  //         { path: '/editReservation', element: <EditReservation /> },
+  //         { path: '/facility', element: <FacilityManitenance /> },
+  //         { path: '/reports', element: <Reports /> },
+  //         { path: '/user', element: <UserMaintenance /> },
+  //         { path: '/reservation', element: <Reservation /> },
+  //         { path: '/support', element: <Support /> },
+  //         { path: '/profile', element: <Profile /> }
+  //       ]
+  //     },
+  //   ])
+  // };
 
   useEffect(() => {
     if (!user) {
