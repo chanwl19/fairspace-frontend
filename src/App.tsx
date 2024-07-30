@@ -3,16 +3,18 @@ import { Suspense, lazy, useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
 //import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
-import Login from './pages/Authentication/Login';
+//import Login from './pages/Authentication/Login';
 //import ECommerce from './pages/Dashboard/ECommerce';
 import useRefreshToken from './hooks/useRefreshToken';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 //import { BrowserRouter as Router } from 'react-router-dom';
+import ResetPassword from './pages/UserPage/ResetPassword';
 
 //const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 //const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
 //const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
-const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
+//const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
+const Login = lazy(() => import('./pages/Authentication/Login'));
 //const FacilityManitenance = lazy(() => import('./pages/UserPage/FacilityMaintenance'));
 //const Reports = lazy(() => import('./pages/UserPage/Reports'));
 //const UserMaintenance = lazy(() => import('./pages/UserPage/UserMaintenance'));
