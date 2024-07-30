@@ -4,21 +4,21 @@ import { AuthContext } from './context/AuthContext';
 //import { Routes, Route } from 'react-router-dom';
 import Loader from './common/loader';
 import Login from './pages/Authentication/Login';
-import ECommerce from './pages/Dashboard/ECommerce';
+//import ECommerce from './pages/Dashboard/ECommerce';
 import useRefreshToken from './hooks/useRefreshToken';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 //import { BrowserRouter as Router } from 'react-router-dom';
 
-const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
-const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
-const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
+//const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
+//const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
+//const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
 const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
-const FacilityManitenance = lazy(() => import('./pages/UserPage/FacilityMaintenance'));
-const Reports = lazy(() => import('./pages/UserPage/Reports'));
-const UserMaintenance = lazy(() => import('./pages/UserPage/UserMaintenance'));
-const Reservation = lazy(() => import('./pages/UserPage/Reservation'));
-const Support = lazy(() => import('./pages/UserPage/Support'));
-const Profile = lazy(() => import('./pages/UserPage/Profile'));
+//const FacilityManitenance = lazy(() => import('./pages/UserPage/FacilityMaintenance'));
+//const Reports = lazy(() => import('./pages/UserPage/Reports'));
+//const UserMaintenance = lazy(() => import('./pages/UserPage/UserMaintenance'));
+//const Reservation = lazy(() => import('./pages/UserPage/Reservation'));
+//const Support = lazy(() => import('./pages/UserPage/Support'));
+// Profile = lazy(() => import('./pages/UserPage/Profile'));
 
 function App() {
   const authCtx = useContext(AuthContext);
