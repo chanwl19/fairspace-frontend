@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from '../http/axios';
 import { AxiosError } from 'axios';
-import UserOne from '../images/user/user-17.jpg';
+import ReactImageFallback from 'react-image-fallback';
+import { fallbackProfileIcon } from '../common/icon';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -11,6 +12,8 @@ const DropdownUser = () => {
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
   const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
+  const user = authCtx.user;
 
   // close on click outside
   useEffect(() => {
@@ -41,13 +44,14 @@ const DropdownUser = () => {
   async function logoutUser(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
     try {
-      await axios.post('auth/logout');
+      await axios.post('auth/logout' , JSON.stringify({user}));
     } catch (err) {
       const error = err as AxiosError;
       const { message } = error.response?.data as { message: string };
       console.log(message);
     }
     authCtx.logoutUser();
+    navigate("/");
   }
 
   return (
@@ -60,13 +64,17 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {user?.firstName}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">{user?.roles?.map((role) => role.roleName).join(', ')}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <ReactImageFallback
+            src={user?.image}
+            fallbackImage={fallbackProfileIcon}
+            alt="profile"
+          />
         </span>
 
         <svg

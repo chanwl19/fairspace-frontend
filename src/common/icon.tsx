@@ -38,3 +38,5 @@ export const icons = [
 
     }
 ];
+
+export const fallbackProfileIcon = 'https://cjpa037ojhb0keuw.public.blob.vercel-storage.com/profile/default-fWi21m46Vc83Tu6431JDjv9ohtabya.jpg';

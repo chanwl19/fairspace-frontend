@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import MenuItem from './MenuItem';
 import axios from '../http/axios';
@@ -13,6 +13,7 @@ interface SidebarProps {
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const location = useLocation();
   const { pathname } = location;
+  const navigate = useNavigate();
 
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
@@ -65,15 +66,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   async function logoutUser(event: React.MouseEvent<HTMLElement>) {
     event.preventDefault();
     try {
-      console.log("user ", user)
       const response = await axios.post('auth/logout', JSON.stringify({user}));
       console.log(response);
     } catch (err) {
       const error = err as AxiosError;
       const { message } = error.response?.data as { message: string };
-      console.log(message);
+      console.log("error ", message)
     } 
     authCtx.logoutUser();
+    navigate("/");
   }
 
   return (

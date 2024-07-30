@@ -5,23 +5,24 @@ import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { AuthContext } from '../../context/AuthContext';
 import axios from '../../http/axios';
+import ReactImageFallback from 'react-image-fallback';
+import { fallbackProfileIcon } from '../../common/icon';
 
-
-const Profile = () => {
+export default function Profile() {
   const [phoneNo, setPhoneNo] = useState<string | undefined>('');
-  const [currentImg, setCurrentImg] = useState<string>(userSix);
+  const [ currentImg, setCurrentImg] = useState<string>(userSix);
   const [selectedFile, setSelectedFile] = useState<File>();
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
-
 
   function handleChangePhoto(event: React.ChangeEvent<HTMLInputElement>) {
     const uploadImg = (event.target.files as FileList)?.[0];
     setSelectedFile(uploadImg);
     setCurrentImg(URL.createObjectURL(uploadImg));
+    console.log(' currentImg ', currentImg)
   }
 
-  async function submitUpdate(event: React.ChangeEvent<HTMLFormElement>) {
+  async function submitProfile(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData();
     if (phoneNo) {
@@ -32,7 +33,7 @@ const Profile = () => {
     }
     formData.append('_id', user?._id.toString() || '');
     try {
-      const response = await axios.patch('user', formData,  {headers: { "Content-Type": "multipart/form-data"}});
+      const response = await axios.patch('user', formData, { headers: { "Content-Type": "multipart/form-data" } });
       console.log('response ', response)
     } catch {
       console.log('error ')
@@ -40,13 +41,9 @@ const Profile = () => {
 
   }
 
-  if (selectedFile) {
-
-  }
-
   return (
     <>
-      <form onSubmit={submitUpdate}>
+      <form onSubmit={submitProfile}>
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65">
             <img
@@ -58,8 +55,9 @@ const Profile = () => {
           <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
             <div className="relative z-30 mx-auto -mt-22 h-30 w-full  rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
               <div className="relative drop-shadow-2">
-                <img
-                  src={currentImg}
+                <ReactImageFallback
+                  src={user?.image}
+                  fallbackImage={fallbackProfileIcon}
                   alt="profile"
                   className="object-fill h-30 w-full rounded-full bg-white/20 p-1 sm:h-44 sm:max-w-44"
                 />
@@ -105,6 +103,20 @@ const Profile = () => {
                 <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
 
                   <div className="p-6.5">
+
+                    <div className="mb-4.5">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        User ID
+                      </label>
+                      <input
+                        type="userid"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                        disabled 
+                        defaultValue={user?.userId}
+                      />
+                    </div>
+
+
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
@@ -113,7 +125,7 @@ const Profile = () => {
                         <input
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                          disabled
+                          defaultValue={user?.firstName}
                         />
                       </div>
 
@@ -124,7 +136,7 @@ const Profile = () => {
                         <input
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                          disabled
+                          defaultValue={user?.middleName}
                         />
                       </div>
 
@@ -135,20 +147,9 @@ const Profile = () => {
                         <input
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                          disabled
+                          defaultValue={user?.lastName}
                         />
                       </div>
-                    </div>
-
-                    <div className="mb-4.5">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        User ID
-                      </label>
-                      <input
-                        type="userid"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                        disabled
-                      />
                     </div>
 
                     <div className="mb-4.5">
@@ -158,7 +159,7 @@ const Profile = () => {
                       <input
                         type="email"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                        disabled
+                        defaultValue={user?.email}
                       />
                     </div>
 
@@ -166,7 +167,7 @@ const Profile = () => {
                       <PhoneInput
                         international
                         placeholder="Enter phone number"
-                        value={phoneNo}
+                        value={user?.phoneNo}
                         onChange={setPhoneNo}
                         defaultCountry="CA"
                         name="phoneNo"
@@ -190,4 +191,3 @@ const Profile = () => {
   );
 };
 
-export default Profile;

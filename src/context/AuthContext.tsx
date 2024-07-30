@@ -19,32 +19,32 @@ const defaultRoutes = [
     {
         path: '/facility',
         title: 'Facility Maintenance',
-        component: FacilityManitenance,
+        component: FacilityManitenance
     },
     {
         path: '/reports',
         title: 'Reports',
-        component: Reports,
+        component: Reports
     },
     {
         path: '/user',
         title: 'User Maintenance',
-        component: UserMaintenance,
+        component: UserMaintenance
     },
     {
         path: '/reservation',
         title: 'Reservation',
-        component: Reservation,
+        component: Reservation
     },
     {
         path: '/support',
         title: 'Support',
-        component: Support,
+        component: Support
     },
     {
         path: '/profile',
         title: 'My Profile',
-        component: Profile,
+        component: Profile
     }
 ]
 
@@ -74,7 +74,9 @@ export function AuthContextProvider(props: BasicProps) {
     const loginUserHandler = (user: User) => {
         setUser(user);
         const pages = user.roles?.map(role => role.pages).flat();
+        console.log('pages ', pages)
         const filterRoutes = defaultRoutes.filter(route => pages!.some(page => route.path === page.path));
+        console.log('filterRoutes ', filterRoutes)
         setRoutes(filterRoutes);
     };
     

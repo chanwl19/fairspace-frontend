@@ -1,6 +1,4 @@
 type page = {
-    menu: string;
-    component: string;
     path: string;
 }
 
