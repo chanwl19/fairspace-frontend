@@ -6,7 +6,7 @@ import axios from '../../http/axios';
 import { AxiosError } from 'axios';
 import Loader from '../../common/loader';
 import ErrorAlert from '../UiElements/ErrorAlert';
-
+//import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -14,6 +14,15 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const userIdInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
+  //const navigate = useNavigate();
+  //const [searchParams] = useSearchParams();
+  //const token = searchParams.get('token');
+  //console.log("toke is ", token)
+
+  //if (token){
+    //console.log("Inside navigate")
+    //navigate('/resetPassword');
+  //}
 
   async function loginUser(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

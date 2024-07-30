@@ -20,16 +20,6 @@ function App() {
   const routes = authCtx.routes;
   const refreshToken = useRefreshToken();
 
-  // const router = createBrowserRouter([
-  //   {
-  //     path: '',
-  //     element: <Login />,
-  //     children: [
-  //       { path: 'resetPassword', element: <ResetPassword /> }
-  //     ]
-  //   },
-  // ])
-
   useEffect(() => {
     if (!user) {
       async function refreshFunc() {
@@ -42,17 +32,50 @@ function App() {
   const editUserPath = user?.roles?.filter(role => role?.pages?.some(page => '/editUser' === page.path));
   const editReservationPath = [1];
   return (
-    (!user?.roles || user?.roles?.length === 0) ? (
+    <>
+      {(user?.roles && user?.roles?.length > 0) &&
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          containerClassName="overflow-auto"
+        />
+      }
       <Suspense fallback={<Loader />}>
         <Router>
-          {/* <RouterProvider router={router}></RouterProvider> */}
           <Routes>
-            <Route index element={<Login />} />
+            {(!user?.roles || user?.roles?.length === 0) && <Route index element={<Login />} />}
             <Route path='/resetPassword' element={<ResetPassword />} />
+            {(user?.roles && user?.roles?.length > 0) &&
+              (<Route element={<DefaultLayout />}>
+                {(editUserPath && editUserPath.length > 0) &&
+                  <Route path='/editUser' element={<EditUser />} />
+                }
+                {(editReservationPath && editReservationPath.length > 0) &&
+                  <Route path='/editReservation' element={<EditReservation />} />
+                }
+                <Route index element={<ECommerce />} />
+                {routes.map((routes, index) => {
+                  const { path, component: Component } = routes;
+                  return (
+                    <Route
+                      key={index}
+                      path={path}
+                      element={
+                        <Component />
+                      }
+                    />
+                  );
+                })}
+              </Route>)
+            }
           </Routes>
         </Router>
       </Suspense>
-    ) : (
+      {/* (!user?.roles || user?.roles?.length === 0) ? (
+      <Suspense fallback={<Loader />}>
+        <Login />
+      </Suspense>
+      ) : (
       <>
         <Toaster
           position="top-right"
@@ -87,7 +110,8 @@ function App() {
           </Router>
         </Suspense>
       </>
-    )
+      ) */}
+    </>
   )
 
   ///const [loading, setLoading] = useState<boolean>(false);
