@@ -6,7 +6,6 @@ const FacilityManitenance = lazy(() => import('../pages/UserPage/FacilityMainten
 const Reports = lazy(() => import('../pages/UserPage/Reports'));
 const UserMaintenance = lazy(() => import('../pages/UserPage/UserMaintenance'));
 const Reservation = lazy(() => import('../pages/UserPage/Reservation'));
-const Support = lazy(() => import('../pages/UserPage/Support'));
 const Profile = lazy(() => import('../pages/UserPage/Profile'));
 
 type RouteType = {
@@ -35,11 +34,6 @@ const defaultRoutes = [
         path: '/reservation',
         title: 'Reservation',
         component: Reservation
-    },
-    {
-        path: '/support',
-        title: 'Support',
-        component: Support
     },
     {
         path: '/profile',
@@ -74,7 +68,7 @@ export function AuthContextProvider(props: BasicProps) {
     const loginUserHandler = (user: User) => {
         setUser(user);
         const pages = user.roles?.map(role => role.pages).flat();
-        console.log('pages ', pages)
+        //console.log('pages ', pages)
         const filterRoutes = defaultRoutes.filter(route => pages!.some(page => route.path === page.path));
         setRoutes(filterRoutes);
     };
