@@ -1,28 +1,59 @@
 import { NavLink } from 'react-router-dom';
 import { Reservation as ReservationDetail } from '../../models/Reservation';
 import ReservationCard from '../UiElements/ReservationCard';
-
-const reservations: ReservationDetail[] = [];
-const reservation1 = new ReservationDetail();
-reservation1._id = Object('1');
-reservation1.startDate = new Date('2024-07-31T15:30:00');
-reservation1.endDate = new Date('2024-07-31T16:30:00');
-reservation1.facilityName = 'A1-12';
-const reservation2 = new ReservationDetail();
-reservation2._id = Object('2');
-reservation2.startDate = new Date('2024-07-31T17:30:00');
-reservation2.endDate = new Date('2024-07-31T19:30:00');
-reservation2.facilityName = 'A1-32';
-const reservation3 = new ReservationDetail();
-reservation3._id = Object('2');
-reservation3.startDate = new Date('2024-07-30T17:30:00');
-reservation3.endDate = new Date('2024-07-30T19:30:00');
-reservation3.facilityName = 'A1-22';
-reservations.push(reservation1);
-reservations.push(reservation2);
-reservations.push(reservation3);
+import { useContext, useState, useEffect } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import axios from '../../http/axios';
+import { AxiosError } from 'axios';
 
 export default function Reservation() {
+
+  const [reservations, setReservations] = useState<ReservationDetail[]>([]);
+  const [displayRecords, setDisplayRecords] = useState<ReservationDetail[]>([]);
+  const [isActiveRecords, setIsActiveRecords] = useState<boolean>(true);
+  const [isCancelRecords, setIsCancelRecords] = useState<boolean>(false);
+  const [isRefresh, setIsRefresh ] = useState<boolean>(false);
+
+  const authCtx = useContext(AuthContext);
+  const user = authCtx.user;
+
+  async function getReservations() {
+    const response = await axios.get('reservation', {
+      params: {
+        userId: user?.userId
+      }
+    });
+    setReservations(response.data.reservations);
+    setDisplayRecords(response.data.reservations.filter((reservation: ReservationDetail) => reservation.status === 'A'));
+  }
+
+  function displayActiveRecords(){
+    setIsActiveRecords(true);
+    setIsCancelRecords(false);
+    setDisplayRecords(reservations.filter(reservation => reservation.status === 'A'));
+  }
+
+  function displayCancelRecords(){
+    setIsActiveRecords(false);
+    setIsCancelRecords(true);
+    setDisplayRecords(reservations.filter(reservation => reservation.status === 'C'));
+  }
+
+  async function cancelReservation(){
+    setIsRefresh(true);
+  }
+
+  useEffect(() => {
+    try {
+      console.log("Start use ffect")
+      getReservations();
+    } catch (err) {
+      const error = err as AxiosError;
+      const { message } = error.response?.data as { message: string };
+      console.log("error ", message)
+    }
+  }, [isRefresh]);
+
   return (
     <>
       <div className="flex items-center justify-between mb-3">
@@ -31,7 +62,7 @@ export default function Reservation() {
         </span>
         <NavLink
           to={{ pathname: '/editReservation' }}
-          state={{ isAddUser: true, user: undefined }}
+          state={{ isNew: true, isEdit: false, isView: false}}
         >
           <span className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
             <span>
@@ -48,15 +79,31 @@ export default function Reservation() {
                 />
               </svg>
             </span>
-            Add
+            Reserve
           </span>
         </NavLink>
       </div>
-      {reservations && reservations.length > 0 ? (
-        reservations.map((reservation: ReservationDetail, index) => {
+      <div>
+        <div className="flex w-full justify-end">
+          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
+            <button
+              onClick={displayActiveRecords}
+              className={`rounded py-1 px-3 text-xl font-large text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark${isActiveRecords ? 'bg-white shadow-card dark:bg-boxdark' : ''}`}>
+              Active
+            </button>
+            <button
+              onClick={displayCancelRecords}
+              className={`rounded py-1 px-3 text-xl font-large text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark${isCancelRecords ? 'bg-white shadow-card dark:bg-boxdark' : ''}`}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      {displayRecords && displayRecords.length > 0 ? (
+        displayRecords.map((reservation: ReservationDetail, index) => {
           return (
             <ul key={index}>
-              <ReservationCard reservation={reservation} />
+              <ReservationCard reservation={reservation} cancelReservationHandler={cancelReservation} />
             </ul>
           );
         })

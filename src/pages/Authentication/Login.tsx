@@ -1,4 +1,4 @@
-import Logo from '../../images/logo/fairspace-transparent.png';
+import Logo from '../../images/logo/fairspace-logo.jpg';
 import { User } from '../../models/User';
 import { useContext, useState, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';

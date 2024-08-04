@@ -1,13 +1,19 @@
+import { Facility } from './Facility';
+
 export class Reservation {
     public _id: Object;
-    public startDate: Date;
-    public endDate: Date ;
-    public facilityName: String;
+    public reserveStartTime: Date;
+    public reserveEndTime: Date;
+    public status: string;
+    public facility: Facility;
+    public userId: string;
 
-    constructor() {
+    constructor(){
         this._id = '';
-        this.startDate = new Date();
-        this.endDate = new Date();
-        this.facilityName = '';
+        this.reserveStartTime= new Date();
+        this.reserveEndTime = new Date();
+        this.status = '';
+        this.facility = new Facility();
+        this.userId = '';
     }
 }
