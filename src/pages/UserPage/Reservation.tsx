@@ -45,7 +45,6 @@ export default function Reservation() {
 
   useEffect(() => {
     try {
-      console.log("Start use ffect")
       getReservations();
     } catch (err) {
       const error = err as AxiosError;
@@ -62,7 +61,6 @@ export default function Reservation() {
         </span>
         <NavLink
           to={{ pathname: '/editReservation' }}
-          state={{ isNew: true, isEdit: false, isView: false}}
         >
           <span className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
             <span>

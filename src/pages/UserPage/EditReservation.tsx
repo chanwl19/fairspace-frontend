@@ -20,11 +20,6 @@ export default function EditReservation() {
     const dateString = (new Date()).getUTCFullYear().toString() + "-" + (((new Date()).getUTCMonth() + 1).toString()).padStart(2, '0') + "-" + ((new Date()).getUTCDate().toString()).padStart(2, '0');
 
     //const user = authCtx.user;
-    //const state = location.state;
-    //const isNew: boolean = state.isNew;
-    //const isEdit: boolean = state.isEdit;
-    //const isView: boolean = state.isView;
-    //const reservation: Reservation = state.reservation;
 
     const reserveDateInput = useRef<HTMLInputElement>(null)
 

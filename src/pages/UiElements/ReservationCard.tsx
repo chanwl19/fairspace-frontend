@@ -1,4 +1,4 @@
-import { BsFillTrashFill, BsFillPencilFill, BsEyeFill } from 'react-icons/bs';
+import { BsFillTrashFill} from 'react-icons/bs';
 import { Reservation } from '../../models/Reservation';
 import { convertDateToString } from '../../utils/dateFormat';
 import { AxiosError } from 'axios';
@@ -6,7 +6,7 @@ import axios from '../../http/axios';
 
 type ReservationCardProps = {
   reservation: Reservation;
-  cancelReservationHandler:  () => void;
+  cancelReservationHandler: () => void;
 };
 
 
@@ -30,7 +30,7 @@ export default function ReservationCard({ reservation, cancelReservationHandler 
           reserveEndDt: reserveEndDt,
           status: status
         }));
-        cancelReservationHandler();
+      cancelReservationHandler();
     } catch (err) {
       const error = err as AxiosError;
       const { message } = error.response?.data as { message: string };
@@ -55,13 +55,9 @@ export default function ReservationCard({ reservation, cancelReservationHandler 
           {reservation.status === 'A' &&
             (
               <>
-                <BsFillPencilFill className="edit-btn cursor-pointer" />
                 <BsFillTrashFill className="delete-btn cursor-pointer" onClick={cancelReservation} />
               </>
             )
-          }
-          {reservation.status === 'C' &&
-            <BsEyeFill className="delete-btn cursor-pointer" />
           }
         </div>
       </div>
