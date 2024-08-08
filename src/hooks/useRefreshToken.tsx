@@ -10,9 +10,9 @@ function useRefreshToken(){
         const response = await axios.get('/refresh', {
             withCredentials: true
         });
-        storeAccessToken(response.data.accessToken);
+        storeAccessToken(response.data.token);
         loginUser(response.data.user);
-        return response.data.accessToken;
+        return response.data.token;
     }
     return refreshToken;
 };

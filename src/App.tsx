@@ -6,11 +6,12 @@ import useRefreshToken from './hooks/useRefreshToken';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
-const EditUser = lazy(() => import('./pages/UserPage/EditUser'));
-const EditReservation = lazy(() => import('./pages/UserPage/EditReservation'));
-const ResetPassword = lazy(() => import('./pages/UserPage/ResetPassword'));
-const Login = lazy(() => import('./pages/Authentication/Login'));
-const ECommerce = lazy(() => import('./pages/Dashboard/ECommerce'));
+const EditUser = lazy(() => import('./components/user/components/EditUser'));
+const EditReservation = lazy(() => import('./components/reservation/components/EditReservation'));
+const ResetPassword = lazy(() => import('./components/user/components/ResetPassword'));
+const Login = lazy(() => import('./components/authenication/Login'));
+const EditFacility = lazy(() => import('./components/facility/components/EditFacility'));
+const WelcomPage = lazy(() => import('./components/WelcomPage'));
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -18,7 +19,8 @@ function App() {
   const routes = authCtx.routes;
   const refreshToken = useRefreshToken();
   const editUserPath = user?.roles?.filter(role => role?.pages?.some(page => '/editUser' === page.path));
-  const editReservationPath = [1];
+  const editReservationPath = user?.roles?.filter(role => role?.pages?.some(page => '/editReservation' === page.path));
+  const editFacilityPath = user?.roles?.filter(role => role?.pages?.some(page => '/editFacility' === page.path));
 
   // if (!user?.roles || user?.roles?.length === 0) {
   //   router = createBrowserRouter([
@@ -82,7 +84,11 @@ function App() {
                 {(editReservationPath && editReservationPath.length > 0) &&
                   <Route path='/editReservation' element={<EditReservation />} />
                 }
-                <Route index element={<ECommerce />} />
+                {
+                  (editFacilityPath && editFacilityPath.length > 0) &&
+                  <Route path='/editFacility' element={<EditFacility />} />
+                }
+                <Route index element={<WelcomPage />} />
                 {routes.map((routes, index) => {
                   const { path, component: Component } = routes;
                   return (

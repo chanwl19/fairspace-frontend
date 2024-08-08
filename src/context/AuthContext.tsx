@@ -1,12 +1,11 @@
 import { createContext, useState, lazy } from 'react';
-import { BasicProps } from '../models/props/BasicType';
 import { User } from '../models/User';
+import { ReactNode } from 'react';
 
-const FacilityManitenance = lazy(() => import('../pages/UserPage/FacilityMaintenance'));
-const Reports = lazy(() => import('../pages/UserPage/Reports'));
-const UserMaintenance = lazy(() => import('../pages/UserPage/UserMaintenance'));
-const Reservation = lazy(() => import('../pages/UserPage/Reservation'));
-const Profile = lazy(() => import('../pages/UserPage/Profile'));
+const FacilityManitenance = lazy(() => import('../components/facility/FacilityMaintenance'));
+const UserMaintenance = lazy(() => import('../components/user/UserMaintenance'));
+const Reservation = lazy(() => import('../components/reservation/Reservation'));
+const Profile = lazy(() => import('../components/profile/Profile'));
 
 type RouteType = {
     path: string;
@@ -14,16 +13,15 @@ type RouteType = {
     component: React.LazyExoticComponent<() => JSX.Element>
 }
 
+type BasicProps = {
+    children: ReactNode;
+}
+
 const defaultRoutes = [
     {
         path: '/facility',
         title: 'Facility Maintenance',
         component: FacilityManitenance
-    },
-    {
-        path: '/reports',
-        title: 'Reports',
-        component: Reports
     },
     {
         path: '/user',
@@ -68,7 +66,6 @@ export function AuthContextProvider(props: BasicProps) {
     const loginUserHandler = (user: User) => {
         setUser(user);
         const pages = user.roles?.map(role => role.pages).flat();
-        //console.log('pages ', pages)
         const filterRoutes = defaultRoutes.filter(route => pages!.some(page => route.path === page.path));
         setRoutes(filterRoutes);
     };

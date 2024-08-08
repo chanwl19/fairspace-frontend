@@ -8,7 +8,6 @@ export class User {
     public firstName?: string;
     public lastName?: string;
     public middleName?: string;
-    public phoneNo? : string;
     public roles?: Role[];
     public accessToken?: string;
     public image? : string;
@@ -20,7 +19,6 @@ export class User {
         this.userId = '';
         this.firstName = '';
         this.lastName = '';
-        this.phoneNo = '';
         this.roles = [];
         this.accessToken = '';
         this.image ='';
