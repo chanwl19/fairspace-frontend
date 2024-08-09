@@ -7,10 +7,11 @@ import axios from '../../../http/axios';
 type ReservationCardProps = {
   reservation: Reservation;
   cancelReservationHandler: () => void;
+  errorMsgHandler: (msg: string) => void;
+  loadingHanlder: (loading: boolean) => void;
 };
 
-
-export default function ReservationCard({ reservation, cancelReservationHandler }: ReservationCardProps) {
+export default function ReservationCard({ reservation, cancelReservationHandler, errorMsgHandler, loadingHanlder }: ReservationCardProps) {
 
   async function cancelReservation() {
     const facilityId = reservation.facility._id.toString();
@@ -19,7 +20,7 @@ export default function ReservationCard({ reservation, cancelReservationHandler 
     const reserveStartDt = reservation.reserveStartTime;
     const reserveEndDt = reservation.reserveEndTime;
     const status = 'C';
-
+    loadingHanlder(true);
     try {
       await axios.patch('reservation',
         JSON.stringify({
@@ -31,10 +32,12 @@ export default function ReservationCard({ reservation, cancelReservationHandler 
           status: status
         }));
       cancelReservationHandler();
+      loadingHanlder(false);
     } catch (err) {
       const error = err as AxiosError;
       const { message } = error.response?.data as { message: string };
-      console.log("error ", message)
+      errorMsgHandler(message);
+      loadingHanlder(false);
     }
   }
 

@@ -5,17 +5,25 @@ import { AuthContext } from '../../context/AuthContext';
 import ReactImageFallback from 'react-image-fallback';
 import { fallbackProfileIcon } from '../../common/icon';
 import useAxios from '../../hooks/useAxios';
+import ErrorAlert from '../uiElements/ErrorAlert';
+import { AxiosError } from 'axios';
+import Loader from '../../common/loader';
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
   const [currentImg, setCurrentImg] = useState<string | undefined>(user?.image || undefined);
   const [selectedFile, setSelectedFile] = useState<File>();
+  const [userEmailError, setUserEmailError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const firstNameInput = useRef<HTMLInputElement>(null);
   const middleNameInput = useRef<HTMLInputElement>(null);
   const lastNameInput = useRef<HTMLInputElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
   const axiosWithHeader = useAxios();
+  const navgigate = useNavigate();
 
   function handleChangePhoto(event: React.ChangeEvent<HTMLInputElement>) {
     const uploadImg = (event.target.files as FileList)?.[0];
@@ -25,33 +33,61 @@ export default function Profile() {
 
   async function submitProfile(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
+    setUserEmailError(false);
+    setErrorMsg('');
+    const _id = user?._id.toString();
+    const firstName = firstNameInput.current?.value;
+    const middleName = middleNameInput.current?.value;
+    const lastName = lastNameInput.current?.value;
+    const email = emailInput.current?.value;
+    const emailRegex = new RegExp('^[A-Za-z0-9]+@my.centennialcollege.ca$');
+
+    if (!email || !emailRegex.test(email)) {
+      setUserEmailError(true);
+      return;
+    }
+
     const formData = new FormData();
     if (selectedFile) {
       formData.append('image', selectedFile);
     }
-    formData.append('_id', user?._id.toString() || '');
-    formData.append('firstName', firstNameInput.current?.value || '');
-    formData.append('middleName', middleNameInput.current?.value || '');
-    formData.append('lastName', lastNameInput.current?.value || '');
-    formData.append('email', emailInput.current?.value || '');
+    formData.append('_id', _id || '');
+    formData.append('firstName', firstName || '');
+    formData.append('middleName', middleName || '');
+    formData.append('lastName', lastName || '');
+    formData.append('email', email || '');
     try {
+      setIsLoading(true);
       await axiosWithHeader.patch('user', formData, { headers: { "Content-Type": "multipart/form-data" } });
       const response = await axiosWithHeader.get('user/byId', {
         params: {
           userId: user?.userId
         }
       });
-      if (response.data.user){
+      if (response.data.user) {
         authCtx.loginUser(response.data.user);
       }
+      setIsLoading(false);
+      navgigate('/');
     } catch (err) {
-      console.log('error ', err)
+      const error = err as AxiosError;
+      const { message } = error.response?.data as { message: string };
+      setErrorMsg(message);
+      setIsLoading(false);
     }
 
   }
 
   return (
     <>
+      {isLoading && <Loader />}
+      {errorMsg &&
+        <ErrorAlert
+          title="Error"
+        >
+          <p>{errorMsg}</p>
+        </ErrorAlert>
+      }
       <form onSubmit={submitProfile}>
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65">
@@ -166,6 +202,7 @@ export default function Profile() {
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                         disabled
                         defaultValue={user?.userId}
+                        required
                       />
                     </div>
 
@@ -180,6 +217,7 @@ export default function Profile() {
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           defaultValue={user?.firstName}
                           ref={firstNameInput}
+                          required
                         />
                       </div>
 
@@ -204,6 +242,7 @@ export default function Profile() {
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           defaultValue={user?.lastName}
                           ref={lastNameInput}
+                          required
                         />
                       </div>
                     </div>
@@ -217,7 +256,9 @@ export default function Profile() {
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                         defaultValue={user?.email}
                         ref={emailInput}
+                        required
                       />
+                      {userEmailError && <p className="text-[#CD5D5D]">Please input a valid centennial email</p>}
                     </div>
                     <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
                       Save

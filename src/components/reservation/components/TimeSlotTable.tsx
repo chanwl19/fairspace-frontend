@@ -8,11 +8,12 @@ import useAxios from '../../../hooks/useAxios';
 
 type TimeSlotTableProps = {
     availableTimeSlots: AvailableTimeSlot[];
-    reserveDate: string;
+    loadingHandler: (loading: boolean) => void;
+    errorMsgHandler: (errorMsg: string) => void
 };
 
 
-export default function TimeSlotTable({ availableTimeSlots }: TimeSlotTableProps) {
+export default function TimeSlotTable({ availableTimeSlots, loadingHandler, errorMsgHandler }: TimeSlotTableProps) {
 
     const [startTimes, setStartTimes] = useState<Date[]>([]);
     const [endTimes, setEndTimes] = useState<Date[]>([]);
@@ -101,6 +102,7 @@ export default function TimeSlotTable({ availableTimeSlots }: TimeSlotTableProps
 
     async function reserveFacility(event: React.ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
+        loadingHandler(true);
         const userId = user?.userId;
         const facilityId = selectedFacility.facility._id.toString();
         const startDt = reserveStartDt.current?.value;
@@ -113,19 +115,20 @@ export default function TimeSlotTable({ availableTimeSlots }: TimeSlotTableProps
             try {
                 await axiosWithHeader.post('reservation',
                     JSON.stringify({
-                        userId: userId, 
-                        facilityId: facilityId, 
+                        userId: userId,
+                        facilityId: facilityId,
                         reserveStartDt: reserveStartDate.toUTCString(),
                         reserveEndDt: reserveEndDate.toUTCString()
                     }));
-                    navigate("/reservation");
+                loadingHandler(false);
+                navigate("/reservation");
             } catch (err) {
                 const error = err as AxiosError;
                 const { message } = error.response?.data as { message: string };
-                console.log("error ", message)
+                loadingHandler(false);
+                errorMsgHandler(message);
             }
         }
-        console.log("Reserve")
     }
 
     return (

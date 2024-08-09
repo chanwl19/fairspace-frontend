@@ -6,38 +6,49 @@ import { AxiosError } from 'axios';
 import { Facility } from '../../models/Facility';
 import FacilityCard from './components/FacilityCard';
 import useAxios from '../../hooks/useAxios';
+import Loader from '../../common/loader';
+import ErrorAlert from '../uiElements/ErrorAlert';
 
 export default function Reservation() {
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [facility, setFacility] = useState<Facility[]>([]);
   const [displayRecords, setDisplayRecords] = useState<Facility[]>([]);
   const [isActiveRecords, setIsActiveRecords] = useState<boolean>(true);
   const [isInactiveRecords, setIsInactiveRecords] = useState<boolean>(false);
-  const [isRefresh, setIsRefresh ] = useState<boolean>(false);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const axiosWithHeader = useAxios();
 
   //const authCtx = useContext(AuthContext);
 
   async function getFacilities() {
-    const response = await axiosWithHeader.get('facility');
-    setFacility(response.data.facilities);
-    setDisplayRecords(response.data.facilities.filter((facility: Facility) => facility.status === 'A'));
+    setIsLoading(true);
+    try {
+      const response = await axiosWithHeader.get('facility');
+      setFacility(response.data.facilities);
+      setDisplayRecords(response.data.facilities.filter((facility: Facility) => facility.status === 'A'));
+      setIsLoading(false);
+    } catch (err) {
+      setFacility([]);
+      setIsLoading(false);
+    }
   }
 
-  function displayActiveRecords(){
+  function displayActiveRecords() {
     setIsActiveRecords(true);
     setIsInactiveRecords(false);
     setDisplayRecords(facility.filter(facility => facility.status === 'A'));
   }
 
-  function displayInactiveRecords(){
+  function displayInactiveRecords() {
     setIsActiveRecords(false);
     setIsInactiveRecords(true);
     setDisplayRecords(facility.filter(facility => facility.status !== 'A'));
   }
 
-  function inactiveFacility(){
-    setIsRefresh(true);
+  function inactiveFacility() {
+    setIsRefresh(!isRefresh);
   }
 
   useEffect(() => {
@@ -52,6 +63,14 @@ export default function Reservation() {
 
   return (
     <>
+      {isLoading && <Loader />}
+      {errorMsg &&
+        <ErrorAlert
+          title="Error"
+        >
+          <p>{errorMsg}</p>
+        </ErrorAlert>
+      }
       <div className="flex items-center justify-between mb-3">
         <span className="text-title-md2 font-semibold text-black dark:text-white">
           Facility Maintenance
@@ -99,12 +118,12 @@ export default function Reservation() {
         displayRecords.map((facility: Facility, index) => {
           return (
             <ul key={index}>
-              <FacilityCard facility={facility} inactiveFacilityHandler={inactiveFacility} />
+              <FacilityCard facility={facility} inactiveFacilityHandler={inactiveFacility} errorMsgHandler={setErrorMsg} loadingHanlder={setIsLoading} />
             </ul>
           );
         })
       ) : (
-          <p>No Facility was found</p>
+        <p>No Facility was found</p>
       )}
     </>
   );

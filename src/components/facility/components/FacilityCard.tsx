@@ -7,20 +7,25 @@ import { NavLink } from 'react-router-dom';
 type FacilityCardProps = {
     facility: Facility;
     inactiveFacilityHandler: () => void;
+    errorMsgHandler: (msg: string) => void;
+    loadingHanlder: (loading: boolean) => void;
 };
 
 
-export default function FacilityCard({ facility, inactiveFacilityHandler }: FacilityCardProps) {
+export default function FacilityCard({ facility, inactiveFacilityHandler, errorMsgHandler, loadingHanlder }: FacilityCardProps) {
 
     async function inactiveFacility() {
+        loadingHanlder(true);
         const facilityId = facility._id.toString();
         try {
             await axios.delete('facility', { data: JSON.stringify({ _id: facilityId }) });
             inactiveFacilityHandler();
+            loadingHanlder(false);
         } catch (err) {
             const error = err as AxiosError;
             const { message } = error.response?.data as { message: string };
-            console.log("error ", message)
+            errorMsgHandler(message);
+            loadingHanlder(false);
         }
     }
 

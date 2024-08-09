@@ -8,12 +8,14 @@ import { AxiosError } from 'axios';
 import { AvailableTimeSlot } from '../../../models/AvailableTimeSlot';
 import TimeSlotTable from './TimeSlotTable';
 import useAxios from '../../../hooks/useAxios';
+import ErrorAlert from '../../uiElements/ErrorAlert';
 
 export default function EditReservation() {
 
-    const [isLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isSearch, setIsSearch] = useState<boolean>(false);
     const [isRoom, setIsRoom] = useState<boolean>(true);
+    const [errorMsg, setErrorMsg] = useState<string>('');
     const [availableTimeSlots, setAvailableTimeSlots] = useState<AvailableTimeSlot[]>([]);
     const axiosWithHeader = useAxios();
     //const location = useLocation();
@@ -36,7 +38,9 @@ export default function EditReservation() {
 
     async function searchFacility(event: React.ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
+        setIsLoading(true);
         setIsSearch(false);
+        setErrorMsg('');
         const facilityType = isRoom ? 'R' : 'D';
         const reserveDate = reserveDateInput.current?.value;
         if (facilityType && reserveDate) {
@@ -49,18 +53,26 @@ export default function EditReservation() {
                 });
                 setAvailableTimeSlots(response.data.timeslots);
                 setIsSearch(true);
+                setIsLoading(false);
             } catch (err) {
                 const error = err as AxiosError;
                 const { message } = error.response?.data as { message: string };
-                console.log("error ", message)
+                setErrorMsg(message);
+                setIsLoading(false);
             }
         }
-
     }
 
     return (
         <>
             {isLoading && <Loader />}
+            {errorMsg &&
+                <ErrorAlert
+                    title="Error"
+                >
+                    <p>{errorMsg}</p>
+                </ErrorAlert>
+            }
             <div className="flex items-center justify-between mb-3">
                 <span className="text-title-md2 font-semibold text-black dark:text-white">Reserve</span>
             </div>
@@ -123,7 +135,8 @@ export default function EditReservation() {
             {(availableTimeSlots && availableTimeSlots.length > 0) ? (
                 <TimeSlotTable
                     availableTimeSlots={availableTimeSlots}
-                    reserveDate={(reserveDateInput.current!.value).toString()}
+                    loadingHandler={setIsLoading}
+                    errorMsgHandler={setErrorMsg}
                 />
             ) : (
                 (isSearch) ? (

@@ -6,43 +6,54 @@ import { AuthContext } from '../../context/AuthContext';
 //import axios from '../../http/axios';
 import { AxiosError } from 'axios';
 import useAxios from '../../hooks/useAxios';
+import Loader from '../../common/loader';
+import ErrorAlert from '../uiElements/ErrorAlert';
 
 export default function Reservation() {
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [reservations, setReservations] = useState<ReservationDetail[]>([]);
   const [displayRecords, setDisplayRecords] = useState<ReservationDetail[]>([]);
   const [isActiveRecords, setIsActiveRecords] = useState<boolean>(true);
   const [isCancelRecords, setIsCancelRecords] = useState<boolean>(false);
-  const [isRefresh, setIsRefresh ] = useState<boolean>(false);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const axiosWithHeader = useAxios();
 
   const authCtx = useContext(AuthContext);
   const user = authCtx.user;
 
   async function getReservations() {
-    const response = await axiosWithHeader.get('reservation', {
-      params: {
-        userId: user?.userId
-      }
-    });
-    setReservations(response.data.reservations);
-    setDisplayRecords(response.data.reservations.filter((reservation: ReservationDetail) => reservation.status === 'A'));
+    setIsLoading(true);
+    try {
+      const response = await axiosWithHeader.get('reservation', {
+        params: {
+          userId: user?.userId
+        }
+      });
+      setReservations(response.data.reservations);
+      setDisplayRecords(response.data.reservations.filter((reservation: ReservationDetail) => reservation.status === 'A'));
+      setIsLoading(false);
+    } catch (err) {
+      setReservations([]);
+      setIsLoading(false);
+    }
   }
 
-  function displayActiveRecords(){
+  function displayActiveRecords() {
     setIsActiveRecords(true);
     setIsCancelRecords(false);
     setDisplayRecords(reservations.filter(reservation => reservation.status === 'A'));
   }
 
-  function displayCancelRecords(){
+  function displayCancelRecords() {
     setIsActiveRecords(false);
     setIsCancelRecords(true);
     setDisplayRecords(reservations.filter(reservation => reservation.status === 'C'));
   }
 
-  async function cancelReservation(){
-    setIsRefresh(true);
+  async function cancelReservation() {
+    setIsRefresh(!isRefresh);
   }
 
   useEffect(() => {
@@ -51,12 +62,20 @@ export default function Reservation() {
     } catch (err) {
       const error = err as AxiosError;
       const { message } = error.response?.data as { message: string };
-      console.log("error ", message)
+      setErrorMsg(message);
     }
   }, [isRefresh]);
 
   return (
     <>
+      {isLoading && <Loader />}
+      {errorMsg &&
+        <ErrorAlert
+          title="Error"
+        >
+          <p>{errorMsg}</p>
+        </ErrorAlert>
+      }
       <div className="flex items-center justify-between mb-3">
         <span className="text-title-md2 font-semibold text-black dark:text-white">
           Reservation
@@ -103,7 +122,7 @@ export default function Reservation() {
         displayRecords.map((reservation: ReservationDetail, index) => {
           return (
             <ul key={index}>
-              <ReservationCard reservation={reservation} cancelReservationHandler={cancelReservation} />
+              <ReservationCard reservation={reservation} cancelReservationHandler={cancelReservation} errorMsgHandler={setErrorMsg} loadingHanlder={setIsLoading} />
             </ul>
           );
         })

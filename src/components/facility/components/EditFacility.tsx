@@ -1,20 +1,21 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-//import axios from '../../http/axios';
 import Loader from '../../../common/loader';
 import { AxiosError } from 'axios';
 import { Facility } from '../../../models/Facility';
 import useAxios from '../../../hooks/useAxios';
+import ErrorAlert from '../../uiElements/ErrorAlert';
 
 export default function EditFacility() {
 
-    const [isLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isRoom, setIsRoom] = useState<boolean>(true);
     const [isSelectedOpen, setIsSelectedOpen] = useState<boolean>(false);
     const [isSelectedClose, setIsSelectedClose] = useState<boolean>(false);
     const [facilityOpenHour, setFacilityOpenHour] = useState<string>('');
     const [facilityCloseHour, setFacilityCloseHour] = useState<string>('');
     const [closeTimeOptions, setCloseTimeOptions] = useState<Date[]>([]);
+    const [errorMsg, setErrorMsg] = useState<string>('');
     const editFacilityOpenTime = new Date();
     const editFacilityCloseTime = new Date();
     const locationInput = useRef<HTMLInputElement>(null);
@@ -103,6 +104,8 @@ export default function EditFacility() {
 
     async function submitFacility(event: React.ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
+        setErrorMsg('');
+        setIsLoading(true);
         const facilityType = isRoom ? 'R' : 'D';
         const selectedOpenTimeStr = openTimeInput.current!.value;
         const selectedCloseTimeStr = closeTimeInput.current!.value;
@@ -136,18 +139,26 @@ export default function EditFacility() {
                     })
                 );
             }
-
+            setIsLoading(false);
             navigate("/facility");
         } catch (err) {
             const error = err as AxiosError;
             const { message } = error.response?.data as { message: string };
-            console.log("error ", message)
+            setErrorMsg(message);
+            setIsLoading(false);
         }
     }
 
     return (
         <>
             {isLoading && <Loader />}
+            {errorMsg &&
+                <ErrorAlert
+                    title="Error"
+                >
+                    <p>{errorMsg}</p>
+                </ErrorAlert>
+            }
             <div className="flex items-center justify-between mb-3">
                 <span className="text-title-md2 font-semibold text-black dark:text-white">Facility</span>
             </div>

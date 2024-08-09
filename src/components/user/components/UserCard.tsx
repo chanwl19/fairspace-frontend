@@ -10,21 +10,26 @@ import { AxiosError } from 'axios';
 type UserCardProps = {
   user: User;
   setUserHandler: (_id: String) => void;
+  errorHandler: (errorMsg: string) => void;
+  loadingHandler: (loading: boolean) => void;
 };
 
- const deleteUserHandler = async (_id: String, setUserHandler: (_id: String) => void) => {
-    try {
-        const response = await axios.delete('user', { data: { _id } });
-        console.log("response ", response)
-        setUserHandler(_id || '');
-    } catch (err) {
-        const error = err as AxiosError;
-        const { message } = error.response?.data as { message: string };
-        console.log('error ' , message)
-    }
-}
+export default function UserCard({ user, setUserHandler, errorHandler, loadingHandler }: UserCardProps) {
 
-export default function UserCard({ user, setUserHandler }: UserCardProps) {
+  async function deleteUserHandler(_id: String, setUserHandler: (_id: String) => void) {
+    loadingHandler(true);
+    try {
+      await axios.delete('user', { data: { _id } });
+      setUserHandler(_id || '');
+      loadingHandler(false);
+    } catch (err) {
+      const error = err as AxiosError;
+      const { message } = error.response?.data as { message: string };
+      errorHandler(message);
+      loadingHandler(false);
+    }
+  }
+
   return (
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div>
@@ -49,7 +54,7 @@ export default function UserCard({ user, setUserHandler }: UserCardProps) {
           </p>
         </div>
         <div className="flex justify-end gap-4.5">
-          <BsFillTrashFill className="delete-btn cursor-pointer" onClick={() => {deleteUserHandler(user._id.toString(), setUserHandler)}}/>
+          <BsFillTrashFill className="delete-btn cursor-pointer" onClick={() => { deleteUserHandler(user._id.toString(), setUserHandler) }} />
           {user.status == 'A' && (
             <NavLink
               to={{ pathname: '/editUser' }}

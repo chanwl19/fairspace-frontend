@@ -6,6 +6,7 @@ import Loader from '../../../common/loader';
 import { Role } from '../../../models/Role';
 import { AxiosError } from 'axios';
 import useAxios from '../../../hooks/useAxios';
+import ErrorAlert from '../../uiElements/ErrorAlert';
 
 export default function EditUser() {
 
@@ -23,6 +24,7 @@ export default function EditUser() {
     const [userEmailError, setUserEmailError] = useState<boolean>(false);
     const [userRoleError, setUserRoleError] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [errorMsg, setErrorMessage] = useState<string>('');
     const [roles, setRoles] = useState<Role[]>([]);
     const axiosWithHeader = useAxios();
 
@@ -35,16 +37,16 @@ export default function EditUser() {
     useEffect(() => {
         try {
             getRoles();
-            console.log("roles are ", roles)
         } catch (err) {
             const error = err as AxiosError;
             const { message } = error.response?.data as { message: string };
-            console.log("error ", message)
+            setErrorMessage(message);
         }
     }, []);
 
     async function saveUser(event: React.ChangeEvent<HTMLFormElement>) {
         event.preventDefault();
+        setErrorMessage('');
         let isValidInput = true;
 
         const formData = new FormData(event.target);
@@ -72,7 +74,7 @@ export default function EditUser() {
         }
 
         for (const entry of data) {
-            if (entry[1]){
+            if (entry[1]) {
                 roles.push(+entry[1]);
             }
         };
@@ -88,7 +90,7 @@ export default function EditUser() {
             setIsLoading(true)
             try {
                 let response;
-                if (isAddUser){
+                if (isAddUser) {
                     response = await axiosWithHeader.post('user', JSON.stringify({
                         userId, firstName: userFirstName, lastName: userLastName,
                         middleName: userMiddleName, email: userEmail, roleIds: roles
@@ -107,7 +109,7 @@ export default function EditUser() {
                 setIsLoading(false);
                 const error = err as AxiosError;
                 const { message } = error.response?.data as { message: string };
-                console.log('error ' , message)
+                setErrorMessage(message);
             }
 
         }
@@ -116,6 +118,13 @@ export default function EditUser() {
     return (
         <>
             {isLoading && <Loader />}
+            {errorMsg &&
+                <ErrorAlert
+                    title="Error"
+                >
+                    <p>{errorMsg}</p>
+                </ErrorAlert>
+            }
             <div className="flex items-center justify-between mb-3">
                 <span className="text-title-md2 font-semibold text-black dark:text-white">User Maintenance</span>
             </div>

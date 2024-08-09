@@ -5,14 +5,28 @@ import { User } from '../../models/User';
 import UserCard from './components/UserCard';
 import { NavLink } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
+import Loader from '../../common/loader';
+import ErrorAlert from '../uiElements/ErrorAlert';
 
 export default function UserMaintenance() {
   const [users, setUsers] = useState<User[]>([]);
   const axiosWithHeader = useAxios();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   async function getUsers() {
-    const response = await axiosWithHeader.get('user');
-    setUsers(response.data.users);
+    setIsLoading(true);
+    try {
+      const response = await axiosWithHeader.get('user');
+      setUsers(response.data.users);
+      setIsLoading(false);
+    } catch (err) {
+      const error = err as AxiosError;
+      const { message } = error.response?.data as { message: string };
+      setUsers([]);
+      setErrorMsg(message);
+      setIsLoading(false);
+    }
   }
 
   function setUserHandler(_id: String) {
@@ -41,6 +55,14 @@ export default function UserMaintenance() {
 
   return (
     <>
+      {isLoading && <Loader />}
+      {errorMsg &&
+        <ErrorAlert
+          title="Error"
+        >
+          <p>{errorMsg}</p>
+        </ErrorAlert>
+      }
       <div className="flex items-center justify-between mb-3">
         <span className="text-title-md2 font-semibold text-black dark:text-white">
           User Maintenance
@@ -68,12 +90,12 @@ export default function UserMaintenance() {
           </span>
         </NavLink>
       </div>
-      {users && (users.filter(user => user.status !== 'D').length > 0 )? (
+      {users && (users.filter(user => user.status !== 'D').length > 0) ? (
         users.map((user: User, index) => {
           return (
             user.status !== 'D' && (
               <ul key={index}>
-                <UserCard user={user} setUserHandler={setUserHandler} />
+                <UserCard user={user} setUserHandler={setUserHandler} loadingHandler={setIsLoading} errorHandler={setErrorMsg} />
               </ul>
             )
           );
