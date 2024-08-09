@@ -1,4 +1,4 @@
-import Logo from '../images/logo/fairspace-logo.jpg';
+import Logo from '../images/logo/fairspace-logo.png';
 
 export default function WelcomPage() {
   return (
