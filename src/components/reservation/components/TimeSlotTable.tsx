@@ -139,7 +139,7 @@ export default function TimeSlotTable({ availableTimeSlots, loadingHandler, erro
             <form onSubmit={reserveFacility}>
                 <div className="flex flex-col gap-5.5 p-6.5">
                     <label className="mb-3 block text-black dark:text-white">
-                        Select Faility
+                        Select Facility
                     </label>
                     <div className="relative z-20 bg-white dark:bg-form-input">
                         <span className="absolute top-1/2 left-4 z-30 -translate-y-1/2">

@@ -22,36 +22,6 @@ function App() {
   const editReservationPath = user?.roles?.filter(role => role?.pages?.some(page => '/editReservation' === page.path));
   const editFacilityPath = user?.roles?.filter(role => role?.pages?.some(page => '/editFacility' === page.path));
 
-  // if (!user?.roles || user?.roles?.length === 0) {
-  //   router = createBrowserRouter([
-  //     {
-  //       path: '',
-  //       element: <Login />
-  //     },
-  //     {
-  //       path: '/resetPassword',
-  //       element: <ResetPassword />
-  //     }
-  //   ])
-  // } else {
-  //   router = createBrowserRouter([
-  //     {
-  //       path: '',
-  //       element: <DefaultLayout />,
-  //       children: [
-  //         { index: true, element: <ECommerce /> },
-  //         { path: '/editUser', element: <EditUser /> },
-  //         { path: '/editReservation', element: <EditReservation /> },
-  //         { path: '/facility', element: <FacilityManitenance /> },
-  //         { path: '/reports', element: <Reports /> },
-  //         { path: '/user', element: <UserMaintenance /> },
-  //         { path: '/reservation', element: <Reservation /> },
-  //         { path: '/support', element: <Support /> },
-  //         { path: '/profile', element: <Profile /> }
-  //       ]
-  //     },
-  //   ])
-  // };
 
   useEffect(() => {
     if (!user) {
@@ -105,107 +75,9 @@ function App() {
             }
           </Routes>
         </Router> 
-      </Suspense>
-      {/* (!user?.roles || user?.roles?.length === 0) ? (
-      <Suspense fallback={<Loader />}>
-        <Login />
-      </Suspense>
-      ) : (
-      <>
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-          containerClassName="overflow-auto"
-        />
-        <Suspense fallback={<Loader />}>
-          <Router>
-            <Routes>
-              <Route element={<DefaultLayout />}>
-                {(editUserPath && editUserPath.length > 0) &&
-                  <Route path='/editUser' element={<EditUser />} />
-                }
-                {(editReservationPath && editReservationPath.length > 0) &&
-                  <Route path='/editReservation' element={<EditReservation />} />
-                }
-                <Route index element={<ECommerce />} />
-                {routes.map((routes, index) => {
-                  const { path, component: Component } = routes;
-                  return (
-                    <Route
-                      key={index}
-                      path={path}
-                      element={
-                        <Component />
-                      }
-                    />
-                  );
-                })}
-              </Route>
-            </Routes>
-          </Router>
-        </Suspense>
-      </>
-      ) */}
+      </Suspense> 
     </>
-  )
-
-  ///const [loading, setLoading] = useState<boolean>(false);
-  // const updateUserHandler = (user: User) => {
-  //   setUser(user);
-  // }
-
-  //const {user} = useContext(AuthContext) as AuthContextType;
-  //console.log(user)
-
-  // return (
-  //   <AuthProvider>
-  //     <Root/>
-  //   </AuthProvider>
-  // )
-  // useEffect(() => {
-  //   setTimeout(() => setLoading(false), 1000);
-  // }, []);
-
-  // return loading ? (
-  //   <Loader />
-  // ) : (
-  //   <>
-  //     <Toaster
-  //         position="top-right"
-  //         reverseOrder={false}
-  //         containerClassName="overflow-auto"
-  //     />
-  //     <Login />
-
-  //   </>
-  // return(
-  // <>
-  //   <Toaster
-  //     position="top-right"
-  //     reverseOrder={false}
-  //     containerClassName="overflow-auto"
-  //   />
-  //   <Suspense fallback={<Loader />}>
-  //     <Routes>
-  //       <Route element={<DefaultLayout />}>
-  //       <Route index element={<ECommerce />} />
-  //         {routes.map((routes, index) => {
-  //           const { path, component: Component } = routes;
-  //           return (
-  //             <Route
-  //               key={index}
-  //               path={path}
-  //               element={
-  //                 <Component />
-  //               }
-  //             />
-  //           );
-  //         })}
-  //       </Route>
-  //     </Routes>
-  //   </Suspense>
-  // </>)
-  //);
+  );
 }
 
 export default App;
