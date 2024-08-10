@@ -21,7 +21,7 @@ export default function Login() {
     try {
       const userId = userIdInput.current!.value;
       const password = passwordInput.current!.value;
-      const response = await axios.post('auth/login', JSON.stringify({ userId, password }));
+      const response = await axios.post('auth/login', JSON.stringify({ userId: userId.trim(), password: password }));
       const user = response.data.user as User;
       authCtx.loginUser(user);
       authCtx.storeAccessToken(response.data.token);
